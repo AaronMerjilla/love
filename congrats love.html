@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Congrats, Love</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    min-height: 100%;
+  }
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(160deg, #fff0e0 0%, #ffd4b8 35%, #f6a99a 65%, #d97ba0 100%);
+    font-family: 'Georgia', 'Times New Roman', serif;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  /* Soft light-ray sparkles drifting in the background */
+  .spark {
+    position: fixed;
+    background: #fff1d0;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: twinkle ease-in-out infinite;
+    z-index: 0;
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.15; transform: scale(0.7); }
+    50% { opacity: 1; transform: scale(1.3); }
+  }
+
+  .stage {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px 60px;
+  }
+
+  .badge-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #d9647f, #b23a5e);
+    color: #fff3e8;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    box-shadow: 0 8px 20px rgba(180, 60, 90, 0.35);
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: badgeIn 0.8s ease forwards;
+    animation-delay: 0.2s;
+  }
+  @keyframes badgeIn {
+    from { opacity: 0; transform: translateY(-10px) scale(0.9); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* ===== Sunburst heart centerpiece ===== */
+  .heart-wrap {
+    display: flex;
+    justify-content: center;
+  }
+
+  .heart-svg {
+    filter: drop-shadow(0 14px 24px rgba(180, 60, 90, 0.3));
+  }
+
+  .ray-group {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: raySpin 18s linear infinite;
+  }
+  @keyframes raySpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .ray { fill: #ffd88a; opacity: 0.85; }
+
+  .heart-pulse {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: heartbeat 2.4s ease-in-out infinite;
+  }
+  @keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    15% { transform: scale(1.12); }
+    30% { transform: scale(1); }
+    45% { transform: scale(1.07); }
+    60% { transform: scale(1); }
+  }
+  .heart-outer { fill: #d9476b; }
+  .heart-inner { fill: #f07d97; }
+
+  .caption {
+    margin-top: 22px;
+    text-align: center;
+  }
+  .caption-title {
+    font-size: 30px;
+    font-weight: 700;
+    color: #a8355a;
+    margin: 0 0 6px;
+    letter-spacing: 0.5px;
+  }
+  .caption-sub {
+    font-size: 14px;
+    font-style: italic;
+    color: #b3627e;
+    margin: 0;
+  }
+
+  /* ===== Congrats message card ===== */
+  .message-card {
+    margin-top: 28px;
+    width: min(480px, 88vw);
+    background: #fffaf5;
+    border-radius: 22px;
+    padding: 34px 32px;
+    box-shadow: 0 24px 50px rgba(180, 60, 90, 0.18), 0 0 0 1px rgba(217, 100, 127, 0.15);
+    text-align: left;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: cardIn 0.9s ease forwards;
+    animation-delay: 0.6s;
+  }
+  @keyframes cardIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .message-card p {
+    color: #5c3a44;
+    font-size: 16px;
+    line-height: 1.85;
+    margin: 0 0 16px;
+  }
+  .message-card p:last-of-type { margin-bottom: 0; }
+
+  .highlight {
+    color: #ce239a;
+    font-weight: 700;
+  }
+
+  .signature {
+    display: block;
+    margin-top: 18px;
+    font-size: 15px;
+    color: #a8355a;
+    font-weight: 700;
+    text-align: right;
+  }
+
+  /* ===== Divider between the two cards ===== */
+  .divider-orn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: min(480px, 88vw);
+    margin: 34px 0 6px;
+    opacity: 0;
+    animation: cardIn 0.9s ease forwards;
+    animation-delay: 1.0s;
+  }
+  .divider-orn::before, .divider-orn::after {
+    content: '';
+    height: 1px;
+    flex: 1;
+    background: linear-gradient(90deg, transparent, #d9a3ae);
+  }
+  .divider-orn::after { background: linear-gradient(90deg, #d9a3ae, transparent); }
+  .divider-orn svg { width: 20px; height: 20px; color: #d9647f; flex-shrink: 0; }
+
+  /* ===== Jogging date invite ticket ===== */
+  .invite-card {
+    margin-top: 6px;
+    width: min(480px, 88vw);
+    background: #fff6ee;
+    border-radius: 24px;
+    border: 1.5px dashed #e0a3a3;
+    padding: 38px 34px 34px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: cardIn 0.9s ease forwards;
+    animation-delay: 1.15s;
+    position: relative;
+  }
+
+  .invite-icon-row {
+    display: flex;
+    justify-content: center;
+    gap: 26px;
+    margin-bottom: 20px;
+  }
+  .invite-icon-row svg {
+    width: 30px;
+    height: 30px;
+    color: #d9647f;
+  }
+
+  .invite-title {
+    font-size: 21px;
+    font-weight: 700;
+    color: #a8355a;
+    margin: 0 0 14px;
+  }
+
+  .invite-text {
+    font-size: 15.5px;
+    color: #6b4a52;
+    line-height: 1.8;
+    margin: 0 0 24px;
+    padding: 0 4px;
+  }
+
+  .invite-details {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 24px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #ffd88a, #f0b06a);
+    color: #6b4419;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 6px 16px rgba(200, 140, 60, 0.3);
+    margin-bottom: 28px;
+  }
+  .invite-details svg { width: 16px; height: 16px; }
+
+  .rsvp-row {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .rsvp-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 22px;
+    flex-wrap: wrap;
+  }
+
+  .rsvp-btn {
+    font-family: 'Georgia', serif;
+    font-size: 14.5px;
+    font-weight: 700;
+    padding: 13px 26px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+  }
+
+  .rsvp-yes {
+    color: #fff3e8;
+    background: linear-gradient(135deg, #d9647f, #a8355a);
+    box-shadow: 0 8px 18px rgba(168, 53, 90, 0.35);
+  }
+  .rsvp-yes:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(168, 53, 90, 0.45); }
+
+  .rsvp-no {
+    color: #a8355a;
+    background: transparent;
+    border: 1.5px solid #e0a3a3;
+  }
+  .rsvp-no:hover { background: rgba(224, 163, 163, 0.12); }
+
+  .rsvp-row.answered .rsvp-btn {
+    opacity: 0.4;
+    pointer-events: none;
+    transform: none !important;
+  }
+  .rsvp-row.answered .rsvp-btn.selected {
+    opacity: 1;
+  }
+
+  .rsvp-response {
+    margin-top: 20px;
+    font-size: 15px;
+    font-style: italic;
+    color: #a8355a;
+    text-align: center;
+    min-height: 22px;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .rsvp-response.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Music player */
+  .music-player {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10;
+  }
+  .music-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1px solid #f0c9c9;
+    background: #fffaf5;
+    color: #a8355a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(180, 60, 90, 0.18);
+    opacity: 0.9;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  .music-btn:hover { opacity: 1; transform: scale(1.06); }
+  .music-btn svg { width: 16px; height: 16px; }
+</style>
+</head>
+<body>
+
+  <!-- Subtle music control -->
+  <div class="music-player">
+    <button class="music-btn" id="musicToggle" aria-label="Play soft background music">
+      <svg id="iconPlay" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      <svg id="iconPause" viewBox="0 0 24 24" fill="currentColor" style="display:none;"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+    </button>
+  </div>
+  <audio id="bgMusic" loop preload="none">
+    <source src="Lyca Gairanod - Puede Nang Mangarap (mp3cut.net).mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="stage">
+    <div class="badge-label">&#10022; you made it &#10022;</div>
+
+    <div class="heart-wrap">
+      <svg class="heart-svg" width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+
+        <!-- Positioning group (static) -->
+        <g transform="translate(100,100)">
+          <!-- Rotating sunburst rays -->
+          <g class="ray-group">
+            <rect class="ray" x="-3" y="-95" width="6" height="24" rx="3"/>
+            <rect class="ray" x="-3" y="-95" width="6" height="24" rx="3" transform="rotate(30)"/>
+            <rect class="ray" x="-3" y="-95" width="6" height="24" rx="3" transform="rotate(60)"/>
+            <rect class="ray" x="-3" y="-95" width="6" height="24" rx="3" transform="rotate(90)"/>
+            <rect class="ray" x="-3" y="-95" width="6" height="24" rx="3" transform="rotate(120)"/>
+            <rect class="ray" x="-3" y="-95" width="6" height="24" rx="3" transform="rotate(150)"/>
+            <rect class="ray" x="-3" y="-95" width="6" height="24" rx="3" transform="rotate(180)"/>
+            <rect class="ray" x="-3" y="-95" width="6" height="24" rx="3" transform="rotate(210)"/>
+            <rect class="ray" x="-3" y="-95" width="6" height="24" rx="3" transform="rotate(240)"/>
+            <rect class="ray" x="-3" y="-95" width="6" height="24" rx="3" transform="rotate(270)"/>
+            <rect class="ray" x="-3" y="-95" width="6" height="24" rx="3" transform="rotate(300)"/>
+            <rect class="ray" x="-3" y="-95" width="6" height="24" rx="3" transform="rotate(330)"/>
+          </g>
+
+          <!-- Heartbeat heart -->
+          <g class="heart-pulse">
+            <path class="heart-outer" d="M0,42 C-30,18 -50,-3 -50,-24 C-50,-42 -36,-52 -22,-52 C-12,-52 -4,-46 0,-38 C4,-46 12,-52 22,-52 C36,-52 50,-42 50,-24 C50,-3 30,18 0,42 Z"/>
+            <path class="heart-inner" d="M0,26 C-18,10 -30,-3 -30,-16 C-30,-27 -21,-33 -13,-33 C-7,-33 -2,-29 0,-24 C2,-29 7,-33 13,-33 C21,-33 30,-27 30,-16 C30,-3 18,10 0,26 Z"/>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <div class="caption">
+      <p class="caption-title">Congrats, My Love</p>
+      <p class="caption-sub">you survived hell week &mdash; and you did it beautifully</p>
+    </div>
+
+    <div class="message-card">
+      <p>You made it through hell week. Love, you are the <span class="highlight">most hardworking and amazing girl</span> in my life.</p>
+      <p>You did it, love! Congratulations!</p>
+      <p>Galing kudos, Your hard work paid off and I will always be here to support you, cheering for you, today and every day after this. more achievements to come with u.</p>
+      <span class="signature">&mdash; so proud of you, always ressssst welll</span>
+    </div>
+
+    <div class="divider-orn">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C10 6 8 8 4 10c4 2 6 4 8 8 2-4 4-6 8-8-4-2-6-4-8-8z"/></svg>
+    </div>
+
+    <div class="invite-card">
+      <div class="invite-icon-row">
+        <!-- Running shoe icon -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 18h20v2H2z"/>
+          <path d="M3 18v-3c0-1 .5-2 1.5-2.5L10 10l2-4 3 1-1 3 4 1c1.5.4 2.5 1.7 2.5 3.2V18"/>
+          <path d="M10 10l3 2"/>
+        </svg>
+        <!-- Clock icon -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M12 7v5l3 3"/>
+        </svg>
+      </div>
+
+      <p class="invite-title">One More Thing&hellip;</p>
+      <p class="invite-text">Can I take you on a jogging date? Just you, me, and the open road.</p>
+
+      <div class="invite-details">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="5" width="18" height="16" rx="2"/>
+          <path d="M8 3v4M16 3v4M3 10h18"/>
+        </svg>
+        4 or 5PM &middot; This Sunday
+      </div>
+
+      <div class="rsvp-row" id="rsvpRow">
+        <button class="rsvp-btn rsvp-yes" id="rsvpYes">Yes, let's go &#9825;</button>
+        <button class="rsvp-btn rsvp-no" id="rsvpNo">Not this time</button>
+      </div>
+
+      <div class="rsvp-response" id="rsvpResponse"></div>
+    </div>
+  </div>
+
+  <script>
+    // ---- RSVP buttons ----
+    const rsvpRow = document.getElementById('rsvpRow');
+    const rsvpYes = document.getElementById('rsvpYes');
+    const rsvpNo = document.getElementById('rsvpNo');
+    const rsvpResponse = document.getElementById('rsvpResponse');
+
+    function handleRsvp(choice, btn) {
+      if (rsvpRow.classList.contains('answered')) return;
+      rsvpRow.classList.add('answered');
+      btn.classList.add('selected');
+
+      rsvpResponse.textContent = choice === 'yes'
+        ? "Yay! Can't wait \u2014 see you Sunday, 5 PM \u2764"
+        : "Okay, love. No pressure \u2014 rain check anytime.";
+
+      requestAnimationFrame(() => {
+        rsvpResponse.classList.add('show');
+      });
+    }
+
+    rsvpYes.addEventListener('click', () => handleRsvp('yes', rsvpYes));
+    rsvpNo.addEventListener('click', () => handleRsvp('no', rsvpNo));
+
+    // ---- Music control ----
+    const musicToggle = document.getElementById('musicToggle');
+    const iconPlay = document.getElementById('iconPlay');
+    const iconPause = document.getElementById('iconPause');
+    const bgMusic = document.getElementById('bgMusic');
+    let isPlaying = false;
+
+    musicToggle.addEventListener('click', () => {
+      if (!isPlaying) {
+        const p = bgMusic.play();
+        if (p !== undefined) {
+          p.then(() => {
+            isPlaying = true;
+            iconPlay.style.display = 'none';
+            iconPause.style.display = 'block';
+          }).catch(() => {
+            iconPlay.style.display = 'block';
+            iconPause.style.display = 'none';
+          });
+        }
+      } else {
+        bgMusic.pause();
+        isPlaying = false;
+        iconPlay.style.display = 'block';
+        iconPause.style.display = 'none';
+      }
+    });
+
+    // ---- Drifting sparkles ----
+    for (let i = 0; i < 30; i++) {
+      const s = document.createElement('div');
+      s.className = 'spark';
+      const size = 2 + Math.random() * 3.5;
+      s.style.width = size + 'px';
+      s.style.height = size + 'px';
+      s.style.left = Math.random() * 100 + 'vw';
+      s.style.top = Math.random() * 100 + 'vh';
+      s.style.animationDuration = (2 + Math.random() * 3) + 's';
+      s.style.animationDelay = Math.random() * 3 + 's';
+      document.body.appendChild(s);
+    }
+  </script>
+
+</body>
+</html>
